@@ -1,4 +1,4 @@
-module bufferedlogger
+module github.com/kaatinga/bufferedlogger
 
 go 1.15
 
