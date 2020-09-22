@@ -1,2 +1,2 @@
 # bufferedlogger
-A simple buffered logger
+Creates a buffered or unbuffered logger with some set options
