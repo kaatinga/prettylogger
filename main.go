@@ -11,14 +11,14 @@ const (
 )
 
 type Logger struct {
-	title     *zerolog.Logger
-	subMsg    *zerolog.Logger
-	subSubMsg *zerolog.Logger
+	Title     *zerolog.Logger
+	SubMsg    *zerolog.Logger
+	SubSubMsg *zerolog.Logger
 }
 
 type BufferedLogger struct {
 	Logger
-	data bytes.Buffer
+	Data bytes.Buffer
 }
 
 func InitLog(writer io.Writer) (log Logger) {
@@ -32,17 +32,17 @@ func InitLog(writer io.Writer) (log Logger) {
 	subMsg := zerolog.New(subMessageWriter).With().Timestamp().Logger()
 	subSubMsg := zerolog.New(subSubMessageWriter).With().Timestamp().Logger()
 
-	log.title = &title
-	log.subMsg = &subMsg
-	log.subSubMsg = &subSubMsg
+	log.Title = &title
+	log.SubMsg = &subMsg
+	log.SubSubMsg = &subSubMsg
 
 	return
 }
 
 func InitBufferedLog() (log BufferedLogger) {
 
-	log.data = bytes.Buffer{}
-	log.Logger = InitLog(&log.data)
+	log.Data = bytes.Buffer{}
+	log.Logger = InitLog(&log.Data)
 
 	//log.subSubMsg.Warn().Msg("Buffered Warning")
 

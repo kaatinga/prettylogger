@@ -15,18 +15,16 @@ func TestNew(t *testing.T) {
 	defer func() {
 		_, err := os.Stdout.Write(buffer.Bytes())
 		if err != nil {
-			log.subSubMsg.Error().Msg("Incorrect Stdout")
+			log.SubSubMsg.Error().Msg("Incorrect Stdout")
 		}
 	}()
 
-	bufferedLog.title.Info().Msg("Buffered Main Message")
-	log.title.Info().Msg("Unbuffered Main Message")
-	log.subMsg.Info().Msg("Unbuffered Sub Message")
-	bufferedLog.subMsg.Info().Msg("Buffered Sub Message")
-	bufferedLog.subSubMsg.Debug().Str("aKey", "aValue").Msg("Buffered Additional Dataset")
-	log.subSubMsg.Debug().Str("aKey", "aValue").Msg("Unbuffered Additional Dataset")
-	log.subSubMsg.Warn().Msg("Unbuffered Warning")
-	bufferedLog.subSubMsg.Warn().Msg("Buffered Warning")
-
-
+	bufferedLog.Title.Info().Msg("Buffered Main Message")
+	log.Title.Info().Msg("Unbuffered Main Message")
+	log.SubMsg.Info().Msg("Unbuffered Sub Message")
+	bufferedLog.SubMsg.Info().Msg("Buffered Sub Message")
+	bufferedLog.SubSubMsg.Debug().Str("aKey", "aValue").Msg("Buffered Additional Dataset")
+	log.SubSubMsg.Debug().Str("aKey", "aValue").Msg("Unbuffered Additional Dataset")
+	log.SubSubMsg.Warn().Msg("Unbuffered Warning")
+	bufferedLog.SubSubMsg.Warn().Msg("Buffered Warning")
 }
