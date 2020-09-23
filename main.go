@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	LoggerFormat = "02.01.2006 15:04\n§"
+	LoggerFormat = "§ 02.01.2006 15:04"
 )
 
 type Logger struct {
@@ -22,6 +22,8 @@ type BufferedLogger struct {
 }
 
 func InitLog(writer io.Writer) (log Logger) {
+
+	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 
 	defaultWriter := zerolog.ConsoleWriter{Out: writer, TimeFormat: LoggerFormat}
 	subMessageWriter := zerolog.ConsoleWriter{Out: writer, TimeFormat: "└ §"}
