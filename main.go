@@ -1,13 +1,15 @@
-package bufferedlogger
+package prettylogger
 
 import (
-	"bytes"
 	"github.com/rs/zerolog"
-	"io"
+	"github.com/rs/zerolog/log"
+	"os"
 )
 
 const (
-	LoggerFormat = "§ 02.01.2006 15:04"
+	titleTimeFormat = "§ 02.01.2006 15:04"
+	subMessageFormat = "└ §"
+	subSubMessageFormat = "  └ §"
 )
 
 type Logger struct {
@@ -16,37 +18,42 @@ type Logger struct {
 	SubSubMsg *zerolog.Logger
 }
 
-type BufferedLogger struct {
-	Logger
-	Data bytes.Buffer
-}
+func InitLogger(level zerolog.Level, colour, customLogger bool) *Logger {
 
-func InitLog(writer io.Writer) (log Logger) {
+	writer := os.Stdout
 
-	zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	globalWriter := zerolog.ConsoleWriter{Out: writer, TimeFormat: " -", NoColor: !colour}
 
-	defaultWriter := zerolog.ConsoleWriter{Out: writer, TimeFormat: LoggerFormat}
-	subMessageWriter := zerolog.ConsoleWriter{Out: writer, TimeFormat: "└ §"}
-	subSubMessageWriter := zerolog.ConsoleWriter{Out: writer, TimeFormat: "  └ §"}
+	// Settings for the global logger
+	log.Logger = zerolog.New(globalWriter).Level(level).With().Timestamp().Logger()
 
-	// Setting up logger
-	title := zerolog.New(defaultWriter).With().Timestamp().Logger()
-	subMsg := zerolog.New(subMessageWriter).With().Timestamp().Logger()
-	subSubMsg := zerolog.New(subSubMessageWriter).With().Timestamp().Logger()
+	log.Info().Msg("global logger format is altered")
 
-	log.Title = &title
-	log.SubMsg = &subMsg
-	log.SubSubMsg = &subSubMsg
+	if customLogger {
 
-	return
-}
+		titleWriter, subMessageWriter, subSubMessageWriter := globalWriter, globalWriter, globalWriter
 
-func InitBufferedLog() (log BufferedLogger) {
+		titleWriter.TimeFormat = titleTimeFormat
+		subMessageWriter.TimeFormat = subMessageFormat
+		subSubMessageWriter.TimeFormat = subSubMessageFormat
 
-	log.Data = bytes.Buffer{}
-	log.Logger = InitLog(&log.Data)
+		// Setting up logger
+		title := zerolog.New(titleWriter).Level(level).With().Timestamp().Logger()
+		subMsg := zerolog.New(subMessageWriter).Level(level).With().Timestamp().Logger()
+		subSubMsg := zerolog.New(subSubMessageWriter).Level(level).With().Timestamp().Logger()
 
-	//log.subSubMsg.Warn().Msg("Buffered Warning")
+		title.Info().Msg("custom logger is enabled")
+		subMsg.Debug().Bool("colour", colour).Send()
+		subMsg.Debug().Str("log level", level.String()).Send()
+		subMsg.Debug().Str("submessages begins with prefix", subMessageFormat).Send()
+		subSubMsg.Debug().Str("subsubmessages begins with prefix", subSubMessageFormat).Send()
 
-	return
+		return &Logger{
+			Title:     &title,
+			SubMsg:    &subMsg,
+			SubSubMsg: &subSubMsg,
+		}
+	}
+
+	return nil
 }
