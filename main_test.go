@@ -1,30 +1,29 @@
-package bufferedlogger
+package prettylogger
 
 import (
-	"bytes"
-	"os"
+	"github.com/rs/zerolog"
 	"testing"
 )
 
-func TestNew(t *testing.T) {
+func TestInitLogger(t *testing.T) {
 
-	unbufferedLog := InitLog(os.Stdout)
-	buffer := bytes.Buffer{}
-	bufferedLog := InitLog(&buffer)
-
-	defer func() {
-		_, err := os.Stdout.Write(buffer.Bytes())
-		if err != nil {
-			unbufferedLog.SubSubMsg.Error().Msg("Incorrect Stdout")
-		}
-	}()
-
-	bufferedLog.Title.Info().Msg("Buffered Main Message")
-	unbufferedLog.Title.Info().Msg("Unbuffered Main Message")
-	unbufferedLog.SubMsg.Info().Msg("Unbuffered Sub Message")
-	bufferedLog.SubMsg.Info().Msg("Buffered Sub Message")
-	bufferedLog.SubSubMsg.Debug().Str("aKey", "aValue").Msg("Buffered Additional Dataset")
-	unbufferedLog.SubSubMsg.Debug().Str("aKey", "aValue").Msg("Unbuffered Additional Dataset")
-	unbufferedLog.SubSubMsg.Warn().Msg("Unbuffered Warning")
-	bufferedLog.SubSubMsg.Warn().Msg("Buffered Warning")
+	tests := []struct {
+		name string
+		level zerolog.Level
+		colour bool
+		customLogger bool
+	}{
+		{ "ok 1", zerolog.TraceLevel, true, true},
+		{ "ok 2", zerolog.InfoLevel, true, true},
+		{ "ok 3", zerolog.InfoLevel, false, true},
+		{ "ok 4", zerolog.InfoLevel, false, false},
+	}
+		for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gottenLogger := InitLogger(tt.level, tt.colour, tt.customLogger)
+			if (gottenLogger != nil) != tt.customLogger {
+				t.Errorf("InitLogger() = %v, want %v", gottenLogger, "a logger")
+			}
+		})
+	}
 }
