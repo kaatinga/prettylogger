@@ -1,5 +1,5 @@
-module github.com/kaatinga/bufferedlogger
+module github.com/kaatinga/prettylogger
 
-go 1.15
+go 1.16
 
-require github.com/rs/zerolog v1.20.0
+require github.com/rs/zerolog v1.23.0
