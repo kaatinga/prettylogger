@@ -1,4 +1,4 @@
-# bufferedlogger
+# prettylogger
 
 Creates a logger with some set view options.
 
